@@ -1,0 +1,7 @@
+1. Download Or Create Dataset
+2. Data Preprocessing
+3. Determine Dependant and Independent Variable
+4. Split Dataset in Training and Testing
+5. Create ML Model
+6. Train Model
+7. Predict Model
