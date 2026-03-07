@@ -19,5 +19,12 @@ x_train,x_test,y_train,y_test = train_test_split(x,y,test_size= 0.2)
 lr = LogisticRegression()
 lr.fit(x_train,y_train)
 y_pred = lr.predict([[salary]])
+
+if y_pred == 0 :
+    print("You Cannot Purchase House Your Salary is Low")
+
+else :
+    print("You Can purchase House You Have Enough Salary")
+
 print("Your Predicted House is : ",y_pred)
 
