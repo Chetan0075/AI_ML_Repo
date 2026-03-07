@@ -36,7 +36,7 @@ else :
 print("---------------------Accuracy of Logistical Regression -------------------")
 y_pred2 = lr.predict(x_test)
 score = accuracy_score(y_test,y_pred2)
-print(score)
+print("Your Accuracy of Logistical Regression :",score)
 
 
 
@@ -56,4 +56,4 @@ else :
 print("---------------------Accuracy of KNN-------------------")
 knn_pred = lr.predict(x_test)
 score2 = accuracy_score(y_test,y_pred2)
-print(score2)    
+print("Your Accuracy of KNN :",score2)    
