@@ -1,105 +1,117 @@
-import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import r2_score, accuracy_score
-import warnings
-warnings.filterwarnings("ignore")
+from sklearn.neighbors import KNeighborsRegressor
+import os
 
-print("\n\n\n--|*|------- Welcome To Semester Prediction System -------|*|--")
+print("\n\n--||------- Welcome To Semester Prediction System -------||--")
 
-sem6_lr = None
-sem6_knn = None
+
+# Load Dataset
+df = pd.read_csv("semester.csv")
+
+# Define X and Y
+x = df[["Sem1","Sem2","Sem3","Sem4","Sem5"]]
+y = df["Sem6"]
+
+# Train Test Split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=42)
+
+# -------- Linear Regression Model --------
+lr = LinearRegression()
+lr.fit(x_train,y_train)
+
+# -------- KNN Model --------
+knn = KNeighborsRegressor(n_neighbors=1)
+knn.fit(x_train,y_train)
+
+# Prediction storage
+prediction_file = "prediction_history.csv"
 
 
 def prediction():
 
-    global sem6_lr, sem6_knn
+    print("\nEnter Marks of Previous Semesters\n")
 
-    sem1 = int(input("\n Enter Sem1 Marks: "))
-    sem2 = int(input(" Enter Sem2 Marks: "))
-    sem3 = int(input(" Enter Sem3 Marks: "))
-    sem4 = int(input(" Enter Sem4 Marks: "))
-    sem5 = int(input(" Enter Sem5 Marks: "))
+    s1 = int(input("Sem1: "))
+    s2 = int(input("Sem2: "))
+    s3 = int(input("Sem3: "))
+    s4 = int(input("Sem4: "))
+    s5 = int(input("Sem5: "))
 
-    # Create training dataset from transitions
-    X = np.array([[sem1],[sem2],[sem3],[sem4]])
-    y = np.array([sem2,sem3,sem4,sem5])
-
-    x_train = X
-    y_train = y
-    x_test = X
-    y_test = y
-
-    # -------- Linear Regression --------
-
-    lr = LinearRegression()
-    lr.fit(x_train,y_train)
-
-    sem6_lr = lr.predict([[sem5]])
-
-    y_pred_lr = lr.predict(x_test)
-
-    lr_score = r2_score(y_test,y_pred_lr)
-
-    # -------- KNN --------
-
-    knn = KNeighborsClassifier(n_neighbors=1)
-    knn.fit(x_train,y_train)
-
-    sem6_knn = knn.predict([[sem5]])
-
-    y_pred_knn = knn.predict(x_test)
-
-    knn_score = accuracy_score(y_test,y_pred_knn)
-
-    print("\n || Prediction Completed ||")
-
-    print("\n--------------------- Accuracy Results -------------------")
-
-    print(" Linear Regression Accuracy :", round(lr_score*100,2),"%")
-
-    print(" KNN Accuracy :", round(knn_score*100,2),"%")
+    data = pd.DataFrame([[s1,s2,s3,s4,s5]],
+    columns=["Sem1","Sem2","Sem3","Sem4","Sem5"])
 
 
-def viewprediction():
+    # Predictions
+    lr_pred = lr.predict(data)[0]
+    knn_pred = knn.predict(data)[0]
 
-    if sem6_lr is None:
-        print("\n\n No prediction available. Run prediction first.")
+    print("\n---------------- Prediction Result ----------------")
+
+    print("Linear Regression Predicted Sem6 :", round(lr_pred,2))
+    print("KNN Predicted Sem6 :", round(knn_pred,2))
+
+    # Save prediction
+    new_data = pd.DataFrame({
+        "Sem1":[s1],
+        "Sem2":[s2],
+        "Sem3":[s3],
+        "Sem4":[s4],
+        "Sem5":[s5],
+        "LR_Predicted_Sem6":[round(lr_pred,2)],
+        "KNN_Predicted_Sem6":[round(knn_pred,2)]
+    })
+
+    if os.path.exists(prediction_file):
+        new_data.to_csv(prediction_file,mode='a',header=False,index=False)
+    else:
+        new_data.to_csv(prediction_file,index=False)
+
+    print("\nPrediction Saved Successfully")
+
+
+
+def view_prediction():
+
+    if os.path.exists(prediction_file):
+
+        df = pd.read_csv(prediction_file)
+
+        print("\n---------------- Prediction History ----------------\n")
+
+        print(df)
+
     else:
 
-        print("\n--------------------- Prediction Results -------------------")
+        print("\nNo prediction history found.")
 
-        print("\n *||* Linear Regression Predicted Sem6 :", round(sem6_lr[0],2),"*||*")
-
-        print("\n *||* KNN Predicted Sem6 :", sem6_knn[0],"*||*\n")
 
 
 def exit_system():
-    print("\n\n --||------- Thank You For Visiting Our Prediction System -------||--")
+    print("\n--||------- Thank You For Using Prediction System -------||--")
     exit()
+
 
 
 def menu():
 
-    while True:
+    print("\n1. Do Prediction")
+    print("2. View Prediction")
+    print("3. Exit")
 
-        print("\n1. Prediction")
-        print("2. View Prediction")
-        print("3. Exit")
+    choice = input("\nEnter Your Choice: ")
 
-        op = input("\n Enter Your Choice : ")
+    if choice == "1":
+        prediction()
 
-        if op == "1":
-            prediction()
+    elif choice == "2":
+        view_prediction()
 
-        elif op == "2":
-            viewprediction()
+    elif choice == "3":
+        exit_system()
 
-        elif op == "3":
-            exit_system()
-
-        else:
-            print("Invalid Choice")
-
+    else:
+        print("Invalid Choice")
 
 menu()
