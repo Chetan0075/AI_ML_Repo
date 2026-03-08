@@ -10,11 +10,11 @@ def prediction():
 
     global sem6
 
-    sem1 = int(input("Enter Sem1 Marks: "))
-    sem2 = int(input("Enter Sem2 Marks: "))
-    sem3 = int(input("Enter Sem3 Marks: "))
-    sem4 = int(input("Enter Sem4 Marks: "))
-    sem5 = int(input("Enter Sem5 Marks: "))
+    sem1 = int(input("\n Enter Sem1 Marks: "))
+    sem2 = int(input(" Enter Sem2 Marks: "))
+    sem3 = int(input(" Enter Sem3 Marks: "))
+    sem4 = int(input(" Enter Sem4 Marks: "))
+    sem5 = int(input(" Enter Sem5 Marks: "))
 
     X = np.array([[sem1],[sem2],[sem3],[sem4]])
     y = np.array([sem2,sem3,sem4,sem5])
@@ -32,7 +32,7 @@ def viewprediction():
     if sem6 is None:
         print("\n\n\n No prediction available. Run prediction first.")
     else:
-        print("\nPredicted Sem6 Marks:", round(sem6[0],2))
+        print("\n *||* Predicted Sem6 Marks :", round(sem6[0],2),"*||* \n\n\n")
 
 
 def exit_system():
